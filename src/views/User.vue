@@ -17,13 +17,10 @@
     <el-table :data="userList" v-loading="loading" border stripe>
       <el-table-column prop="id" label="用户ID" sortable width="100"></el-table-column>
       <el-table-column prop="username" label="用户名" sortable width="150"></el-table-column>
-      <el-table-column prop="phone" label="联系电话" width="120"></el-table-column>
-      <el-table-column prop="registerTime" label="注册时间" sortable></el-table-column>
-      <el-table-column prop="roles" label="角色权限">
+      <el-table-column prop="roles" label="用户权限">
         <template slot-scope="scope">
-          <el-checkbox :checked="true" disabled>普通用户</el-checkbox>
-          <el-checkbox :name="scope.row.id.toString()" :checked="scope.row.roles.length === 2"
-                       @change="updateRole(scope.row)">超级管理员
+          <el-checkbox :name="scope.row.id.toString()" :checked="scope.row.admin"
+                       @change="updateRole(scope.row)">管理员
           </el-checkbox>
         </template>
       </el-table-column>
@@ -31,10 +28,17 @@
         <template slot-scope="scope">
           <el-switch
             @change="updateEnabled(scope.row)"
-            v-model="scope.row.enabled"
+            v-model="scope.row.status"
             active-text="启用"
             inactive-text="禁用">
           </el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createTime" label="注册时间" sortable></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" sortable></el-table-column>
+      <el-table-column prop="username" label="修改密码" sortable width="150">
+        <template slot-scope="scope">
+          <el-button @click="deleteUser(scope.row)" size="mini" icon="el-icon-edit" type="primary" plain>修改</el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="150">
@@ -50,10 +54,7 @@
         style="margin-top: 10px;"
         :total="total"
         :current-page="page"
-        :page-size="pageSize"
         @current-change="onPageChange"
-        @size-change="onPageSizeChange"
-        :page-sizes="[5, 10, 15, 20, 25]"
       ></el-pagination>
     </el-footer>
     <!-- 添加用户对话框 -->
@@ -67,9 +68,6 @@
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword">
           <el-input v-model="addForm.confirmPassword" show-password prefix-icon="el-icon-lock"></el-input>
-        </el-form-item>
-        <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="addForm.phone" prefix-icon="el-icon-phone"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -96,7 +94,6 @@
       return {
         total: 0, // 查询到的用户总数
         page: 1, // 当前页码
-        pageSize: 10, // 当前页面大小
         keyword: "", // 查询用户名的关键字
         userList: [], // 获得的查询结果
         loading: true, // 页面表格是否处于加载状态
@@ -106,13 +103,11 @@
           username: "",
           password: "",
           confirmPassword: "",
-          phone: ""
         },
         rules: {
           username: [{required: true, message: "用户名不能为空", trigger: "blur"}],
           password: [{required: true, message: "密码不能为空", trigger: "blur"}],
           confirmPassword: [{required: true, validator: validatorPassword, trigger: "blur"}],
-          phone: [{required: true, message: "联系电话不能为空", trigger: "blur"}]
         }
       };
     },
@@ -123,21 +118,20 @@
 
     methods: {
       loadUserList(url) {
-        let that = this;
         this.$axios.get(url).then(res => {
           if (res.status === 200) {
             console.log(res);
-            that.userList = res.data.data.userList;
-            that.total = res.data.data.total;
-            that.loading = false;
-            that.$message.success("数据加载成功");
+            this.userList = res.data.data.userList;
+            this.total = res.data.data.total;
+            this.$message.success(res.data.message);
+            this.loading = false;
           } else {
-            that.loading = false;
-            that.$message.error("数据加载失败");
+            this.loading = false;
+            this.$message.error("数据加载失败");
           }
         }).catch(err => {
-          that.loading = false;
-          that.$message.error("服务器异常");
+          this.loading = false;
+          this.$message.error("服务器异常");
         });
       },
 
@@ -147,28 +141,14 @@
           return;
         }
         this.loading = true;
-        let url = "/user/list?page=" + this.page + "&pageSize=" + this.pageSize + "&keyword=" + this.keyword.trim();
+        let url = "/user/list?page=" + this.page + "&keyword=" + this.keyword.trim();
         this.loadUserList(url);
       },
 
       onPageChange(val) {
         this.page = val;
         this.loading = true;
-        let url = "/user/list?page=" + this.page + "&pageSize=" + this.pageSize;
-        if (this.keyword !== "") {
-          url += "&keyword=" + this.keyword.trim();
-        }
-        this.loadUserList(url);
-      },
-
-      onPageSizeChange(val) {
-        this.pageSize = val;
-        if (this.pageSize * (this.page - 1) >= this.total) {
-          this.page = 1;
-          this.pageSize = 10;
-        }
-        this.loading = true;
-        let url = "/user/list?page=" + this.page + "&pageSize=" + this.pageSize;
+        let url = "/user/list?page=" + this.page;
         if (this.keyword !== "") {
           url += "&keyword=" + this.keyword.trim();
         }
@@ -180,69 +160,67 @@
           if (!valid) {
             return false;
           }
-          let that = this;
+          
           this.$axios.post("/user/add", {
             username: this.addForm.username,
             password: this.addForm.password,
-            phone: this.addForm.phone
           }).then(res => {
             if (res.status === 200) {
               if (res.data === 1) {
-                that.$message.success("用户添加成功");
-                that.isDialogVisible = false;
-                that.addForm = {username: "", password: "", phone: ""};
-                that.loadUserList("/user/list");
+                this.$message.success("用户添加成功");
+                this.isDialogVisible = false;
+                this.addForm = {username: "", password: ""};
+                this.loadUserList("/user/list");
               } else {
-                that.$message.warning("用户添加失败, 用户名可能已存在");
+                this.$message.warning("用户添加失败, 用户名可能已存在");
               }
             }
           }).catch(err => {
             if (err.toString().includes("403")) {
-              that.$message.error("权限不足，请联系管理员")
+              this.$message.error("权限不足，请联系管理员")
             } else {
-              that.$message.error("服务器异常")
+              this.$message.error("服务器异常")
             }
           });
         });
       },
 
-      updateEnabled(row) {
-        let that = this;
-        let url = "/user/" + row.id + "/enabled" + "?enabled=" + row.enabled;
+      updateEnabled(row) { 
+        let url = "/user/" + row.id + "/enabled";
         this.$axios.post(url, {}).then(res => {
           if (res.status === 200) {
             if (res.data === 1) {
-              that.$message.success("用户[" + row.username + "]状态修改成功");
+              this.$message.success("用户[" + row.username + "]状态修改成功");
             } else {
-              that.$message.warning("用户[" + row.username + "]状态修改失败");
+              this.$message.warning("用户[" + row.username + "]状态修改失败");
             }
           }
         }).catch(err => {
           if (err.toString().includes("403")) {
-            that.$message.error("权限不足，请联系管理员")
+            this.$message.error("权限不足，请联系管理员")
           } else {
-            that.$message.error("服务器异常")
+            this.$message.error("服务器异常")
           }
         });
       },
 
       updateRole(row) {
-        let that = this;
+        
         let checked = document.getElementsByName(row.id)[0].checked;
         let url = "/user/" + row.id + "/role" + "?isAdmin=" + checked;
         this.$axios.post(url, {}).then(res => {
           if (res.status === 200) {
             if (res.data === 1) {
-              that.$message.success("修改用户[" + row.username + "]角色成功");
+              this.$message.success("修改用户[" + row.username + "]角色成功");
             } else {
-              that.$message.warning("修改用户[" + row.username + "]角色失败");
+              this.$message.warning("修改用户[" + row.username + "]角色失败");
             }
           }
         }).catch(err => {
           if (err.toString().includes("403")) {
-            that.$message.error("权限不足，请联系管理员")
+            this.$message.error("权限不足，请联系管理员")
           } else {
-            that.$message.error("服务器异常")
+            this.$message.error("服务器异常")
           }
         });
       },
@@ -253,15 +231,15 @@
           cancelButtonText: "取消",
           type: "warning"
         }).then(() => {
-          let that = this;
+          
           this.$axios.delete("/user/" + row.id + "/delete").then(res => {
-            that.$message.success("用户[" + row.username + "]已删除");
-            that.loadUserList("/user/list");
+            this.$message.success("用户[" + row.username + "]已删除");
+            this.loadUserList("/user/list");
           }).catch(err => {
             if (err.toString().includes("403")) {
-              that.$message.error("权限不足，请联系管理员")
+              this.$message.error("权限不足，请联系管理员")
             } else {
-              that.$message.error("服务器异常")
+              this.$message.error("服务器异常")
             }
           });
         });

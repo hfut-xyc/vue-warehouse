@@ -24,40 +24,33 @@
         <el-menu
           router
           background-color="#eeeeee"
-          :default-openeds="['1', '2', '3']"
+          :default-openeds="['1', '2']"
           :default-active="this.$route.path"
         >
           <el-submenu index="1">
             <template slot="title">
-              <i class="el-icon-s-home"></i>仓库管理
+              <i class="el-icon-s-home"></i>基本信息
             </template>
-            <el-menu-item index="/home/warehouse">
-              <i class="el-icon-coin"></i>仓库信息
+            <el-menu-item index="/home/user">
+              <i class="el-icon-user"></i>用户管理
             </el-menu-item>
-          </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-menu"></i>产品管理
-            </template>
+            <el-menu-item index="/home/warehouse">
+              <i class="el-icon-coin"></i>仓库管理
+            </el-menu-item>
             <el-menu-item index="/home/inventory">
-              <i class="el-icon-s-operation"></i>产品清单
+              <i class="el-icon-s-operation"></i>产品管理
             </el-menu-item>
             <el-menu-item index="/home/order">
               <i class="el-icon-date"></i>订单管理
             </el-menu-item>
-            <el-menu-item index="/home/chart">
-              <i class="el-icon-s-data"></i>数据统计
-            </el-menu-item>
           </el-submenu>
-          <el-submenu index="3">
+
+          <el-submenu index="2">
             <template slot="title">
-              <i class="el-icon-user-solid"></i>人力资源管理
+              <i class="el-icon-menu"></i>数据分析
             </template>
-            <el-menu-item index="/home/employee">
-              <i class="el-icon-edit-outline"></i>仓库员工管理
-            </el-menu-item>
-            <el-menu-item index="/home/user">
-              <i class="el-icon-user"></i>用户管理
+            <el-menu-item index="/home/chart">
+              <i class="el-icon-s-data"></i>订单统计
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -105,7 +98,7 @@ export default {
     width: 160px;
     background-color: #0080c9;
     overflow: hidden;
- }
+}
 
 .el-aside {
   height: 100vh;

@@ -1,15 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import Login from "@/views/Login.vue"
-import Home from '@/views/Home.vue'
-import Warehouse from '@/components/warehouse/Warehouse.vue'
-import Inventory from '@/components/product/Inventory.vue'
-import Order from '@/components/product/Order.vue'
-import Chart from '@/components/product/Chart.vue'
-import User from '@/components/human/User.vue'
-import Employee from '@/components/human/Employee.vue'
-import WarehouseDetail from "@/components/warehouse/WarehouseDetail"
+import Login from "../views/Login.vue"
+
+import Home from '../views/Home.vue'
+import User from '../views/User.vue'
+import Warehouse from '../views/warehouse/Warehouse.vue'
+import Product from '../views/product/Product.vue'
+import Order from '../views/product/Order.vue'
+import Chart from '../views/product/Chart.vue'
+// import Employee from '../views/human/Employee.vue'
+import WarehouseDetail from "../views/warehouse/WarehouseDetail"
 
 Vue.use(VueRouter);
 
@@ -49,19 +50,13 @@ export default new VueRouter({
         {
           path: 'inventory',
           name: "产品清单",
-          component: Inventory,
+          component: Product,
           meta: { requireAuth: true }
         },
         {
           path: 'order',
           name: "订单管理",
           component: Order,
-          meta: { requireAuth: true }
-        },
-        {
-          path: 'employee',
-          name: "员工管理",
-          component: Employee,
           meta: { requireAuth: true }
         },
         {

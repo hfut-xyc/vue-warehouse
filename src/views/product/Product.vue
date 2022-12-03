@@ -14,7 +14,6 @@
     <el-table :data="productList" v-loading="loading" border stripe>
       <el-table-column prop="id" label="产品编号" sortable></el-table-column>
       <el-table-column prop="name" label="产品名"></el-table-column>
-      <el-table-column prop="supplier" label="供货商"></el-table-column>
       <el-table-column prop="total" label="商品总量" sortable></el-table-column>
     </el-table>
 
@@ -27,8 +26,6 @@
         :current-page="page"
         :page-size="pageSize"
         @current-change="onPageChange"
-        @size-change="onPageSizeChange"
-        :page-sizes="[5, 10, 15, 20, 25]"
       ></el-pagination>
     </el-footer>
   </el-container>

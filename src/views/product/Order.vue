@@ -20,10 +20,10 @@
 </template>
 
 <script>
-  import OrderList from "@/components/product/OrderList.vue";
-  import OrderAddOld from "@/components/product/OrderAddOld.vue";
-  import OrderAddNew from "@/components/product/OrderAddNew.vue";
-  import OrderDustbin from "@/components/product/OrderDustbin.vue";
+  import OrderList from "./OrderList.vue";
+  import OrderAddOld from "./OrderAddOld.vue";
+  import OrderAddNew from "./OrderAddNew.vue";
+  import OrderDustbin from "./OrderDustbin.vue";
 
   export default {
     name: "Order",
