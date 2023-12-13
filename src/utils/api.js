@@ -1,22 +1,31 @@
-import axios from 'axios';
+import axios from 'axios'
 
-export const postRequest = (url, params) => {
-    return axios({
-      method: 'post',
-      url: url,
-      data: params,
-      transformRequest: [function (data) {
-        let result = '';
-        for (let it in data) {
-          result += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
-        }
-        // 截去最后多余的一个&
-        result = result.substr(0, result.length - 1);
-        return result;
-      }],
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
-  }
-  
+const service = axios.create({
+  // baseURL: 'http://localhost:8081/',
+  baseURL: '/api',
+  timeout: 3000
+})
+
+export function getRequest(url, params) {
+  return service({
+    method: 'GET',
+    url: url,
+    params: params
+  })
+}
+
+export function postRequest(url, data) {
+  return service({
+    method: 'POST',
+    url: url,
+    data: data
+  })
+}
+
+export function deleteRequest(url, data) {
+  return service({
+    method: 'DELETE',
+    url: url,
+    data: data
+  })
+}

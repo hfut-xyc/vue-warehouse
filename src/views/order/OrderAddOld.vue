@@ -22,31 +22,13 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="操作员工" prop="eid">
-          <template v-if="addOrderForm.wid !== ''">
-            <el-select v-model="addOrderForm.eid" :loading="warehouseLoading" filterable>
-              <!-- 在v-for属性中唯有find才能正确取出对应的operators -->
-              <el-option
-                v-for="operator in warehouseList.find(item => item.id === addOrderForm.wid).operators"
-                :key="operator.id"
-                :label="operator.name"
-                :value="operator.id">
-              </el-option>
-            </el-select>
-          </template>
-          <template v-else>
-            <el-select v-model="addOrderForm.eid" disabled placeholder="请先选择仓库">
-            </el-select>
-          </template>
-        </el-form-item>
-        <el-form-item label="产品数量" prop="amount">
+
+        <el-form-item label="数量" prop="amount">
           <el-input-number v-model.number="addOrderForm.amount" step-strictly controls-position="right"
                            :min="getProductMin()">
           </el-input-number>
         </el-form-item>
-        <el-form-item label="产品报废">
-          <el-checkbox v-model="isObsolete" :disabled="addOrderForm.amount >= 0">是否为报废产品</el-checkbox>
-        </el-form-item>
+
       </el-form>
     </el-main>
     <el-footer>
@@ -76,7 +58,6 @@
         },
         rules: {
           wid: [{required: true, message: "仓库名称不能为空", trigger: "blur"}],
-          eid: [{required: true, message: "操作员工不能为空", trigger: "blur"}],
           pid: [{required: true, message: "商品名称不能为空", trigger: "blur"}],
           amount: [{required: true, validator: amountValidator, trigger: 'change'}],
         },
@@ -84,7 +65,6 @@
         warehouseList: [],        // 员工列表，这里包括了仓库的员工。
         productLoading: false,
         warehouseLoading: false,
-        isObsolete: false
       }
     },
 

@@ -1,72 +1,58 @@
 <template>
-  <div>
-    <el-header style="background-color: #33b1f5">
-      <div class="title">仓库信息管理系统</div>
-      <el-dropdown @command="logout" class="dropdown">
-        <div class="currentUser">
-          <el-avatar src="" style="margin-right: 5px"></el-avatar>
-          <label style="font-weight: bold">{{
-            this.$store.state.currentUser
-          }}</label>
-        </div>
-        <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>
-            <i class="el-icon-delete"></i>退出登录
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-    </el-header>
+  <el-container>
+    <el-aside width="220px">
+      <el-menu router :default-active="this.$route.path" text-color="#fff" active-text-color="#ffd04b"
+      background-color="rgb(48,65,86)">
+        <h3 class="logo">仓库信息管理系统</h3>
+        <el-menu-item index="/home/warehouse">
+          <i class="el-icon-coin"></i>仓库管理
+        </el-menu-item>
+        <el-menu-item index="/home/product">
+          <i class="el-icon-s-operation"></i>产品管理
+        </el-menu-item>
+        <el-menu-item index="/home/user">
+          <i class="el-icon-user"></i>用户管理
+        </el-menu-item>
+        <el-submenu index="1">
+            <template slot="title">
+              <i class="el-icon-s-home"></i>订单管理
+            </template>
+            <el-menu-item index="/home/order/list">
+              <i class="el-icon-user"></i>订单列表
+            </el-menu-item>
+            <el-menu-item index="/home/order/chart">
+              <i class="el-icon-coin"></i>订单统计
+            </el-menu-item>
+          </el-submenu>
+      </el-menu>
+    </el-aside>
 
     <el-container>
-      <div id="aside">
-
-      <el-aside width="200px">
-        <el-menu
-          router
-          background-color="#eeeeee"
-          :default-openeds="['1', '2']"
-          :default-active="this.$route.path"
-        >
-          <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-s-home"></i>基本信息
-            </template>
-            <el-menu-item index="/home/user">
-              <i class="el-icon-user"></i>用户管理
-            </el-menu-item>
-            <el-menu-item index="/home/warehouse">
-              <i class="el-icon-coin"></i>仓库管理
-            </el-menu-item>
-            <el-menu-item index="/home/inventory">
-              <i class="el-icon-s-operation"></i>产品管理
-            </el-menu-item>
-            <el-menu-item index="/home/order">
-              <i class="el-icon-date"></i>订单管理
-            </el-menu-item>
-          </el-submenu>
-
-          <el-submenu index="2">
-            <template slot="title">
-              <i class="el-icon-menu"></i>数据分析
-            </template>
-            <el-menu-item index="/home/chart">
-              <i class="el-icon-s-data"></i>订单统计
-            </el-menu-item>
-          </el-submenu>
-        </el-menu>
-      </el-aside>
-      </div>
-
-      <el-main>
+      <el-header height="60px">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item v-text="this.$route.name"></el-breadcrumb-item>
         </el-breadcrumb>
-        <!-- show subview here-->
+        <el-dropdown @command="logout">
+          <div>
+            <el-avatar src="" style="margin-right: 5px"></el-avatar>
+            <label style="font-weight: bold">{{
+              this.$store.state.currentUser
+            }}</label>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>
+              <i class="el-icon-delete"></i>退出登录
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+      </el-header>
+      <el-main>
+        <!-- show components here-->
         <router-view></router-view>
       </el-main>
     </el-container>
-  </div>
+  </el-container>
 </template>
 
 <script>
@@ -79,7 +65,6 @@ export default {
         .get("/logout")
         .then((res) => {
           if (res.data === "success") {
-            that.$store.commit("logout");
             that.$router.replace("/login");
             that.$message.success("注销成功");
           }
@@ -94,34 +79,34 @@ export default {
 </script>
 
 <style>
-.aside {
-    width: 160px;
-    background-color: #0080c9;
-    overflow: hidden;
-}
-
 .el-aside {
   height: 100vh;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 
-.title {
-  color: white;
-  float: left;
-  font-size: large;
-  margin-top: 20px;
+.el-aside::-webkit-scrollbar {
+  display: none;
 }
 
-.dropdown {
-  color: white;
-  float: right;
-  cursor: pointer;
-  margin-top: 10px;
+.el-menu {
+  height: 100vh;
 }
 
-.currentUser {
+.logo {
+  color: white;
+  text-align: center;
+}
+
+.el-header {
   display: flex;
   align-items: center;
+  border-bottom: 1px solid #ededed;
 }
+
+.el-dropdown {
+  cursor: pointer;
+  margin-left: auto;
+}
+
 </style>
