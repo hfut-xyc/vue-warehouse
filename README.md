@@ -6,7 +6,7 @@
 先确保安装了 [Node.js](https://nodejs.org/en/) 最新版本
 ```
 # npm 换源
-npm config set registry https://registry.npm.taobao.org
+npm config set registry https://registry.npmmirror.org
 
 # 安装项目依赖
 npm install

@@ -5,13 +5,13 @@ import store from '@/store/index.js'
 import ElementUI from 'element-ui'
 
 import 'element-ui/lib/theme-chalk/index.css';
-import VeLine from 'v-charts/lib/line.common.js'
-import VePie from 'v-charts/lib/pie.common.js'
+// import VeLine from 'v-charts/lib/line.common.js'
+// import VePie from 'v-charts/lib/pie.common.js'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
-Vue.component(VeLine)
-Vue.component(VePie)
+// Vue.component(VeLine)
+// Vue.component(VePie)
 
 new Vue({
     el: '#app',
