@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <div>
-      <el-date-picker v-model="period" :editable="false" type="datetimerange" placement="bottom-start" 
+      <el-date-picker v-model="period" :editable="false" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange" placement="bottom-start" 
       range-separator="至" 
       start-placeholder="开始时间"
         end-placeholder="结束时间">
@@ -14,11 +14,9 @@
       <el-table-column prop="eid" label="操作用户" sortable width="120"></el-table-column>
       <el-table-column prop="wid" label="仓库编号" sortable></el-table-column>
       <el-table-column prop="pid" label="产品编号" sortable></el-table-column>
-      <el-table-column prop="amount" label="订单数量"
-        :filters="[{ text: '入库订单', value: 'input' }, { text: '出库订单', value: 'output' }]" :filter-method="orderFilter">
-      </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="180"></el-table-column>
-      <el-table-column label="操作" width="150" fixed="right">
+      <el-table-column prop="amount" label="订单数量" sortable></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="100"></el-table-column>
+      <el-table-column label="操作" width="150" >
         <template slot-scope="scope">
           <el-button @click="deleteOrder(scope.row)" size="mini" icon="el-icon-delete" type="danger" plain>删除
           </el-button>
@@ -44,7 +42,7 @@ export default {
       total: 0,     // 查询到的订单总数
       page: 1,      // 当前页码
       period: [],
-      loading: true
+      loading: false
     }
   },
 
@@ -53,40 +51,39 @@ export default {
   },
 
   methods: {
+    /**
+     * 加载仓库列表
+     */
     async loadOrderList(url) {
       const res = await getRequest(url)
       console.log(res)
-      this.loading = false
+      this.loading = true
       if (res.data.code === 0) {
+        this.total = res.data.data.total
         this.orderList = res.data.data.orderList
         this.$message.success(res.data.message)
       } else {
         this.$message.error(res.data.message)
       }
+      this.loading = false
     },
 
     searchOrder() {
-      if (this.period.length === 0) {
-        this.$message.warning("请输入查询区间");
-        return;
+      if (this.period.length === 2) {
+        let url = `/order/list?page=${this.page}&startTime=${this.period[0]}&endTime=${this.period[1]}`;
+        this.loadOrderList(url)
+      } else {
+        this.$message.warning("请输入查询区间")
       }
-      this.loading = true;
-      let url = `/order/list?page=${this.page}&startTime=${this.period[0].getTime()}&endTime=${this.period[1].getTime()}`;
-      this.loadOrderList(url);
     },
 
     onPageChange(val) {
       this.page = val;
-      this.loading = true;
-      let url = "/order/list?page=" + this.page + "&pageSize=" + this.pageSize;
-      if (this.period.length !== 0) {
-        url += "&startTime=" + this.period[0].getTime() + "&endTime=" + this.period[1].getTime();
+      let url = `/order/list?page=${this.page}&pageSize${this.pageSize}`
+      if (this.period.length === 2) {
+        url += "&startTime=" + this.period[0] + "&endTime=" + this.period[1];
       }
       this.loadOrderList(url);
-    },
-
-    orderFilter(value, row) {
-      return value === "input" ? row.amount > 0 : row.amount < 0;
     },
 
     deleteOrder(row) {

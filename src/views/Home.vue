@@ -5,7 +5,7 @@
       background-color="rgb(48,65,86)">
         <h3 class="logo">仓库信息管理系统</h3>
         <el-menu-item index="/home/warehouse">
-          <i class="el-icon-coin"></i>仓库管理
+          <i class="el-icon-s-home"></i>仓库管理
         </el-menu-item>
         <el-menu-item index="/home/product">
           <i class="el-icon-s-operation"></i>产品管理
@@ -13,17 +13,12 @@
         <el-menu-item index="/home/user">
           <i class="el-icon-user"></i>用户管理
         </el-menu-item>
-        <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-s-home"></i>订单管理
-            </template>
-            <el-menu-item index="/home/order/list">
-              <i class="el-icon-user"></i>订单列表
-            </el-menu-item>
-            <el-menu-item index="/home/order/chart">
-              <i class="el-icon-coin"></i>订单统计
-            </el-menu-item>
-          </el-submenu>
+        <el-menu-item index="/home/order/list">
+          <i class="el-icon-money"></i>订单列表
+        </el-menu-item>
+        <el-menu-item index="/home/order/chart">
+          <i class="el-icon-coin"></i>订单统计
+        </el-menu-item>
       </el-menu>
     </el-aside>
 

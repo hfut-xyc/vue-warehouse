@@ -10,8 +10,8 @@
       <el-table-column prop="id" label="用户ID" sortable width="200"></el-table-column>
       <el-table-column prop="username" label="用户名" sortable width="200"></el-table-column>
       <el-table-column prop="role" label="用户角色" width="200"></el-table-column>
-      <el-table-column prop="createTime" label="创建时间" sortable width="200"></el-table-column>
-      <el-table-column prop="updateTime" label="修改时间" sortable width="200"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="100"></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" sortable width="100"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button @click="updateUser(scope.row)" size="mini" icon="el-icon-edit" type="warning">修改</el-button>
@@ -65,7 +65,7 @@ export default {
       page: 1, // 当前页码
       keyword: "", // 查询用户名的关键字
       userList: [], // 获得的查询结果
-      loading: true, // 页面表格是否处于加载状态
+      loading: false, // 页面表格是否处于加载状态
 
       isDialogVisible: false,   // 添加用户的对话框是否可见
       addForm: {    // 添加用户表单
@@ -82,13 +82,13 @@ export default {
   },
 
   mounted: function () {
-    this.loadUserList("/user/list")
+    this.listUser("/user/list")
   },
 
   methods: {
-    async loadUserList(url) {
+    async listUser(url) {
       const res = await getRequest(url)
-      this.loading = false
+      this.loading = true
       if (res.data.code === 0) {
         this.total = res.data.data.total
         this.userList = res.data.data.userList
@@ -96,6 +96,7 @@ export default {
       } else {
         this.$message.error(res.data.message)
       }
+      this.loading = false
     },
 
     searchUser() {
@@ -103,19 +104,17 @@ export default {
         this.$message.warning("请输入关键字")
         return
       }
-      this.loading = true
       let url = `/user/list?page=${this.page}&keyword=${this.keyword.trim()}`
-      this.loadUserList(url)
+      this.listUser(url)
     },
 
     onPageChange(val) {
       this.page = val
-      this.loading = true
       let url = `/user/list?page=${this.page}`
       if (this.keyword !== "") {
         url += "&keyword=" + this.keyword.trim()
       }
-      this.loadUserList(url)
+      this.listUser(url)
     },
 
     addUser() {
@@ -124,7 +123,7 @@ export default {
           return false
         }
 
-        this.$axios.post("/user/add", {
+        this.$axios.post("/user", {
           username: this.addForm.username,
           password: this.addForm.password,
         }).then(res => {
@@ -133,7 +132,7 @@ export default {
               this.$message.success("用户添加成功")
               this.isDialogVisible = false
               this.addForm = { username: "", password: "" }
-              this.loadUserList("/user/list")
+              this.listUser("/user/list")
             } else {
               this.$message.warning("用户添加失败, 用户名可能已存在")
             }
@@ -157,7 +156,7 @@ export default {
 
         this.$axios.delete("/user/" + row.id + "/delete").then(res => {
           this.$message.success("用户[" + row.username + "]已删除")
-          this.loadUserList("/user/list")
+          this.listUser("/user/list")
         }).catch(err => {
           if (err.toString().includes("403")) {
             this.$message.error("权限不足，请联系管理员")
