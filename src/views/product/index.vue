@@ -5,10 +5,24 @@
       <el-button @click="searchProduct()" type="primary" icon="el-icon-search">查询</el-button>
     </div>
 
-    <el-table :data="productList" v-loading="loading" stripe>
+    <el-table :data="productList" v-loading="loading" stripe border>
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-table :data="scope.row.warehouseList" stripe style="margin-left: 50px">
+            <el-table-column prop="id" label="仓库ID" width="200" sortable ></el-table-column>
+            <el-table-column prop="name" label="仓库名" width="200"></el-table-column>
+            <el-table-column prop="count" label="存放数量" width="100"></el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
       <el-table-column prop="id" label="产品编号" sortable></el-table-column>
       <el-table-column prop="name" label="产品名"></el-table-column>
-      <el-table-column prop="total" label="商品总量" sortable></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button @click="update(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
+          <el-button @click="delete(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-footer>
@@ -35,15 +49,22 @@ export default {
   },
 
   mounted() {
-    this.loadData("/product/list");
+    this.loadProductList("/product/list");
   },
 
   methods: {
     async loadProductList(url) {
       const res = await getRequest(url)
       console.log(res)
-      this.productList = res.data.data.productList
-      this.loading = false
+      this.loading = true
+      if (res.data.code === 0) {
+        this.total = res.data.data.total
+        this.productList = res.data.data.productList
+        this.$message.success(res.data.message)
+      } else {
+        this.$message.error(res.data.message)
+      }
+      this.loading = false;
     },
 
     searchProduct() {

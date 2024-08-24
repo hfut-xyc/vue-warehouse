@@ -27,11 +27,6 @@ const routes =  [
         component: () => import('@/views/warehouse/index.vue'),
       },
       {
-        path: 'warehouse/:id',
-        name: '仓库详情',
-        component: () => import('@/views/warehouse/WarehouseDetail.vue'),
-      },
-      {
         path: 'product',
         name: '产品管理',
         component: () => import('@/views/product/index.vue'),
@@ -44,20 +39,13 @@ const routes =  [
       {
         path: 'order',
         name: '订单管理',
-        component: () => import('@/views/Layout.vue'),
-        children: [
-          {
-            path: 'list',
-            name: '订单列表',
-            component: () => import('@/views/order/OrderList.vue'),
-          },
-          {
-            path: 'chart',
-            name: '订单统计',
-            component: () => import('@/views/order/OrderChart.vue'),
-          },
-        ]
+        component: () => import('@/views/order/index.vue'),
       },
+      {
+        path: 'chart',
+        name: '数据统计',
+        component: () => import('@/views/chart/index.vue'),
+      }
     ]
   }
 ]

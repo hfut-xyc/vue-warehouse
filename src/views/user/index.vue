@@ -82,11 +82,11 @@ export default {
   },
 
   mounted: function () {
-    this.listUser("/user/list")
+    this.loadUserList("/user/list")
   },
 
   methods: {
-    async listUser(url) {
+    async loadUserList(url) {
       const res = await getRequest(url)
       this.loading = true
       if (res.data.code === 0) {

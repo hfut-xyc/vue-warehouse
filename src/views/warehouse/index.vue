@@ -6,16 +6,31 @@
       <el-button @click="isDialogVisible = true" type="primary" icon="el-icon-plus" plain>添加新仓库</el-button>
     </div>
 
-    <el-table :data="warehouseList" v-loading="loading" stripe>
-      <el-table-column prop="id" label="仓库ID" sortable width="100"></el-table-column>
-      <el-table-column prop="name" label="仓库名" width="300">
-        <!-- <el-table-column prop="address" label="仓库地址" width="300"> -->
+    <el-table :data="warehouseList" v-loading="loading" stripe border>
+      <el-table-column type="expand">
         <template slot-scope="scope">
-          <span style="color: #0083ee;cursor: pointer" @click="goToDetail(scope.row)" title="点击查看详情">{{ scope.row.name
-          }}</span>
+          <el-table :data="scope.row.productList" stripe style="margin-left: 50px">
+            <el-table-column prop="id" label="产品ID" width="200" sortable ></el-table-column>
+            <el-table-column prop="name" label="产品名" width="200"></el-table-column>
+            <el-table-column prop="count" label="存放数量" width="100"></el-table-column>
+          </el-table>
         </template>
       </el-table-column>
-
+      <el-table-column prop="id" label="仓库ID" sortable width="150"></el-table-column>
+      <el-table-column prop="name" label="仓库名" width="250"></el-table-column>
+      
+      <!-- <el-table-column prop="createUserId" label="创建人ID"  width="150"></el-table-column> -->
+      <el-table-column prop="createUserName" label="创建人"  width="100"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" sortable width="110"></el-table-column>
+      <!-- <el-table-column prop="updateUserId" label="更新人ID"  width="150"></el-table-column> -->
+      <el-table-column prop="updateUserName" label="更新人"  width="100"></el-table-column>
+      <el-table-column prop="updateTime" label="修改时间" sortable width="110"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button @click="update(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
+          <el-button @click="delete(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
     <el-footer>
@@ -62,19 +77,16 @@ export default {
 
     };
   },
+  
   mounted: function () {
-    this.loading = true;
     this.loadWarehouseList("/warehouse/list");
   },
 
   methods: {
-    goToDetail(row) {
-      this.$router.push({ name: '仓库详情', params: row });
-    },
-
     async loadWarehouseList(url) {
       const res = await getRequest(url)
-      this.loading = false
+      console.log(res)
+      this.loading = true
       if (res.data.code === 0) {
         this.total = res.data.data.total
         this.warehouseList = res.data.data.warehouseList
@@ -82,9 +94,10 @@ export default {
       } else {
         this.$message.error(res.data.message)
       }
+      this.loading = false;
     },
 
-    search() {
+    searchWarehouse() {
       if (this.keyword.trim() === "") {
         this.$message.warning("请输入关键字");
         return;

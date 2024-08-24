@@ -13,11 +13,11 @@
         <el-menu-item index="/home/user">
           <i class="el-icon-user"></i>用户管理
         </el-menu-item>
-        <el-menu-item index="/home/order/list">
+        <el-menu-item index="/home/order">
           <i class="el-icon-money"></i>订单列表
         </el-menu-item>
-        <el-menu-item index="/home/order/chart">
-          <i class="el-icon-coin"></i>订单统计
+        <el-menu-item index="/home/chart">
+          <i class="el-icon-coin"></i>数据统计
         </el-menu-item>
       </el-menu>
     </el-aside>
