@@ -8,7 +8,7 @@
           <i class="el-icon-s-home"></i>仓库管理
         </el-menu-item>
         <el-menu-item index="/home/product">
-          <i class="el-icon-s-operation"></i>产品管理
+          <i class="el-icon-coin"></i>产品管理
         </el-menu-item>
         <el-menu-item index="/home/user">
           <i class="el-icon-user"></i>用户管理
@@ -17,7 +17,7 @@
           <i class="el-icon-money"></i>订单列表
         </el-menu-item>
         <el-menu-item index="/home/chart">
-          <i class="el-icon-coin"></i>数据统计
+          <i class="el-icon-data-line"></i>数据统计
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -51,23 +51,28 @@
 </template>
 
 <script>
+import {removeToken} from '@/utils/token'
+
 export default {
   name: "Home",
   methods: {
     logout() {
-      let that = this;
-      this.$axios
-        .get("/logout")
-        .then((res) => {
-          if (res.data === "success") {
-            that.$router.replace("/login");
-            that.$message.success("注销成功");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          that.$message.error("注销失败");
-        });
+      removeToken()
+      this.$router.replace("/login");
+      this.$message.success("注销成功");
+      console.log("test");
+      
+      // let that = this;
+      // this.$axios
+      //   .get("/logout")
+      //   .then((res) => {
+      //     if (res.data === "success") {
+      //     }
+      //   })
+      //   .catch((err) => {
+      //     console.log(err);
+      //     that.$message.error("注销失败");
+      //   });
     },
   },
 };

@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import { postRequest } from "@/utils/api";
 import CryptoJS from 'crypto-js';
-import {getToken, setToken} from '@/utils/token'
+import { postRequest } from "@/utils/api";
+import { setToken } from '@/utils/token'
 
 export default {
   name: "Login",

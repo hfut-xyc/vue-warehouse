@@ -19,8 +19,8 @@
       <el-table-column prop="name" label="产品名"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="update(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
-          <el-button @click="delete(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+          <el-button @click="updateRow(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
+          <el-button @click="deleteRow(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -44,7 +44,8 @@ export default {
       page: 1,      // 当前页码
       pageSize: 10, // 当前页面大小
       keyword: "",
-      loading: true
+      loading: true,
+      isDialogVisible: false, 
     }
   },
 
@@ -105,8 +106,5 @@ export default {
 </script>
 
 <style>
-.el-input {
-  width: 250px;
-  margin-right: 10px;
-}
+
 </style>

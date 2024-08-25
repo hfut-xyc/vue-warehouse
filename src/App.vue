@@ -6,6 +6,11 @@
 
 <style>
 .el-table {
-  margin-top: 15px;
+  margin-top: 10px;
+}
+
+.el-input {
+  width: 250px;
+  margin-right: 10px;
 }
 </style>

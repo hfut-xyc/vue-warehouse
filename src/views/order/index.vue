@@ -7,6 +7,7 @@
         end-placeholder="结束时间">
       </el-date-picker>
       <el-button @click="searchOrder()" type="primary" style="margin-left: 10px" icon="el-icon-search">按创建时间查询</el-button>
+      <el-button @click="isDialogVisible = true" type="success" icon="el-icon-plus" plain>创建订单</el-button>
     </div>
 
     <el-table :data="orderList" v-loading="loading" stripe>
@@ -42,7 +43,8 @@ export default {
       total: 0,     // 查询到的订单总数
       page: 1,      // 当前页码
       period: [],
-      loading: false
+      loading: false,
+      isDialogVisible: false, 
     }
   },
 
@@ -114,8 +116,5 @@ export default {
 </script>
 
 <style scoped>
-.el-input {
-  width: 250px;
-  margin-right: 10px;
-}
+
 </style>

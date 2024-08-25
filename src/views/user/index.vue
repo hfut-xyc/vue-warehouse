@@ -9,13 +9,18 @@
     <el-table :data="userList" v-loading="loading" stripe>
       <el-table-column prop="id" label="用户ID" sortable width="200"></el-table-column>
       <el-table-column prop="username" label="用户名" sortable width="200"></el-table-column>
-      <el-table-column prop="role" label="用户角色" width="200"></el-table-column>
+      <el-table-column prop="role" label="用户角色" width="200">
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.role === 1">管理员</el-tag>
+          <el-tag type="primary" v-else>普通用户</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="createTime" label="创建时间" sortable width="100"></el-table-column>
       <el-table-column prop="updateTime" label="修改时间" sortable width="100"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="updateUser(scope.row)" size="mini" icon="el-icon-edit" type="warning">修改</el-button>
-          <el-button @click="deleteUser(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+          <el-button @click="updateRow(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
+          <el-button @click="deleteRow(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -61,12 +66,11 @@ export default {
   name: "User",
   data() {
     return {
+      userList: [], // 获得的查询结果
       total: 0, // 查询到的用户总数
       page: 1, // 当前页码
       keyword: "", // 查询用户名的关键字
-      userList: [], // 获得的查询结果
       loading: false, // 页面表格是否处于加载状态
-
       isDialogVisible: false,   // 添加用户的对话框是否可见
       addForm: {    // 添加用户表单
         username: "",
@@ -147,22 +151,16 @@ export default {
       })
     },
 
-    deleteUser(row) {
+    deleteRow(row) {
       this.$confirm("是否删除该用户?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
 
-        this.$axios.delete("/user/" + row.id + "/delete").then(res => {
-          this.$message.success("用户[" + row.username + "]已删除")
-          this.listUser("/user/list")
-        }).catch(err => {
-          if (err.toString().includes("403")) {
-            this.$message.error("权限不足，请联系管理员")
-          } else {
-            this.$message.error("服务器异常")
-          }
+        this.$axios.delete("/user?" + row.id).then(res => {
+          this.$message.success("用户已删除")
+          this.loadUserList("/user/list")
         })
       })
     }
@@ -171,8 +169,5 @@ export default {
 </script>
 
 <style>
-.el-input {
-  width: 250px;
-  margin-right: 10px;
-}
+
 </style>

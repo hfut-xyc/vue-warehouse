@@ -3,7 +3,7 @@
     <div>
       <el-input v-model="keyword" placeholder="按仓库名搜索" prefix-icon="el-icon-search"></el-input>
       <el-button @click="search()" type="primary" icon="el-icon-search">查询</el-button>
-      <el-button @click="isDialogVisible = true" type="primary" icon="el-icon-plus" plain>添加新仓库</el-button>
+      <el-button @click="isDialogVisible = true" type="success" icon="el-icon-plus" plain>添加新仓库</el-button>
     </div>
 
     <el-table :data="warehouseList" v-loading="loading" stripe border>
@@ -18,17 +18,14 @@
       </el-table-column>
       <el-table-column prop="id" label="仓库ID" sortable width="150"></el-table-column>
       <el-table-column prop="name" label="仓库名" width="250"></el-table-column>
-      
-      <!-- <el-table-column prop="createUserId" label="创建人ID"  width="150"></el-table-column> -->
       <el-table-column prop="createUserName" label="创建人"  width="100"></el-table-column>
       <el-table-column prop="createTime" label="创建时间" sortable width="110"></el-table-column>
-      <!-- <el-table-column prop="updateUserId" label="更新人ID"  width="150"></el-table-column> -->
       <el-table-column prop="updateUserName" label="更新人"  width="100"></el-table-column>
       <el-table-column prop="updateTime" label="修改时间" sortable width="110"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button @click="update(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
-          <el-button @click="delete(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+          <el-button @click="updateRow(scope.row)" size="mini" icon="el-icon-edit">修改</el-button>
+          <el-button @click="deleteRow(scope.row)" size="mini" icon="el-icon-delete" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -148,19 +145,5 @@ export default {
 </script>
 
 <style>
-.el-input {
-  width: 250px;
-  margin-right: 10px;
-}
 
-.el-tag+.el-tag {
-  margin-left: 10px;
-}
-
-.detail-form label {
-  width: 100px;
-  color: #99a9bf;
-  text-align: end;
-  margin-right: 20px;
-}
 </style>
