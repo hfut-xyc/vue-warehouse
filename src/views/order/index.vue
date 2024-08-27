@@ -1,12 +1,8 @@
 <template>
   <el-container>
     <div>
-      <el-date-picker v-model="period" :editable="false" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange" placement="bottom-start" 
-      range-separator="至" 
-      start-placeholder="开始时间"
-        end-placeholder="结束时间">
-      </el-date-picker>
-      <el-button @click="searchOrder()" type="primary" style="margin-left: 10px" icon="el-icon-search">按创建时间查询</el-button>
+      <el-date-picker v-model="date" value-format="yyyy-MM-dd" placeholder="请选择订单日期"></el-date-picker>
+      <el-button @click="searchOrder()" type="primary" icon="el-icon-search">按订单日期查询</el-button>
       <el-button @click="isDialogVisible = true" type="success" icon="el-icon-plus" plain>创建订单</el-button>
     </div>
 
@@ -42,7 +38,7 @@ export default {
       orderList: [],
       total: 0,     // 查询到的订单总数
       page: 1,      // 当前页码
-      period: [],
+      date: '',
       loading: false,
       isDialogVisible: false, 
     }
@@ -71,19 +67,19 @@ export default {
     },
 
     searchOrder() {
-      if (this.period.length === 2) {
-        let url = `/order/list?page=${this.page}&startTime=${this.period[0]}&endTime=${this.period[1]}`;
-        this.loadOrderList(url)
-      } else {
+      if (this.date === "") {
         this.$message.warning("请输入查询区间")
+      } else {
+        let url = `/order/list?page=${this.page}&date=${this.date}`
+        this.loadOrderList(url)
       }
     },
 
     onPageChange(val) {
       this.page = val;
       let url = `/order/list?page=${this.page}&pageSize${this.pageSize}`
-      if (this.period.length === 2) {
-        url += "&startTime=" + this.period[0] + "&endTime=" + this.period[1];
+      if (this.date.length !== 0) {
+        url += "&date=${this.date}";
       }
       this.loadOrderList(url);
     },

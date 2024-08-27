@@ -2,7 +2,7 @@
   <el-container>
     <div>
       <el-input v-model="keyword" placeholder="按仓库名搜索" prefix-icon="el-icon-search"></el-input>
-      <el-button @click="search()" type="primary" icon="el-icon-search">查询</el-button>
+      <el-button @click="searchWarehouse()" type="primary" icon="el-icon-search">查询</el-button>
       <el-button @click="isDialogVisible = true" type="success" icon="el-icon-plus" plain>添加新仓库</el-button>
     </div>
 
@@ -82,7 +82,7 @@ export default {
   methods: {
     async loadWarehouseList(url) {
       const res = await getRequest(url)
-      console.log(res)
+      // console.log(res)
       this.loading = true
       if (res.data.code === 0) {
         this.total = res.data.data.total
@@ -97,10 +97,10 @@ export default {
     searchWarehouse() {
       if (this.keyword.trim() === "") {
         this.$message.warning("请输入关键字");
-        return;
+      } else {
+        let url = `/warehouse/list?page=${this.page}&pageSize=${this.pageSize}&keyword=${this.keyword.trim()}`
+        this.loadWarehouseList(url);
       }
-      let url = `/warehouse/list?page=${this.page}&pageSize=${this.pageSize}&keyword=${this.keyword.trim()}`
-      this.loadWarehouseList(url);
     },
 
     onPageChange(val) {

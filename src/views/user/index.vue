@@ -106,10 +106,10 @@ export default {
     searchUser() {
       if (this.keyword.trim() === "") {
         this.$message.warning("请输入关键字")
-        return
+      } else {
+        let url = `/user/list?page=${this.page}&keyword=${this.keyword.trim()}`
+        this.loadUserList(url)
       }
-      let url = `/user/list?page=${this.page}&keyword=${this.keyword.trim()}`
-      this.listUser(url)
     },
 
     onPageChange(val) {

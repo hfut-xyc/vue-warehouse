@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <div>
-      <el-input v-model="keyword" placeholder="通过产品名搜索" prefix-icon="el-icon-search"></el-input>
+      <el-input v-model="keyword" placeholder="按产品名搜索" prefix-icon="el-icon-search"></el-input>
       <el-button @click="searchProduct()" type="primary" icon="el-icon-search">查询</el-button>
     </div>
 
@@ -56,7 +56,7 @@ export default {
   methods: {
     async loadProductList(url) {
       const res = await getRequest(url)
-      console.log(res)
+      // console.log(res)
       this.loading = true
       if (res.data.code === 0) {
         this.total = res.data.data.total
@@ -71,11 +71,10 @@ export default {
     searchProduct() {
       if (this.keyword.trim() === "") {
         this.$message.warning("请输入关键字");
-        return;
+      } else {
+        let url = "/products?page=" + this.page + "&pageSize=" + this.pageSize + "&keyword=" + this.keyword.trim();
+        this.loadProductList(url);
       }
-      this.loading = true;
-      let url = "/products?page=" + this.page + "&pageSize=" + this.pageSize + "&keyword=" + this.keyword.trim();
-      this.loadProductList(url);
     },
 
     onPageChange(val) {
